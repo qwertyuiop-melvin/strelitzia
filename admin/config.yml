@@ -1,7 +1,12 @@
 backend:
   name: github
-  repo: strelitziatrio/strelitziatrio
-  branch: main # or master
+  repo: strelitziatrio/strelitziatrio  # replace with your GitHub username if different
+  branch: main                         # or master, check your default branch
+  auth_scope: repo                    # scope for GitHub OAuth (repo is standard)
+  base_url: https://strelitziatrio.com/admin   # your Netlify CMS admin URL
+  auth_endpoint: /admin/authenticate  # path used for auth; usually /admin/authenticate
+  api_root: https://api.github.com     # GitHub API endpoint
+  open_authoring: false                # false means only repo collaborators can edit; true allows fork+pull requests for external contributors
 
 media_folder: "static/img"
 public_folder: "/img"
@@ -13,5 +18,5 @@ collections:
     create: true
     slug: "{{slug}}"
     fields:
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Body", name: "body", widget: "markdown"}
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown" }
