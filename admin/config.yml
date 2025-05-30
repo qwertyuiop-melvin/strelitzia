@@ -4,7 +4,7 @@ backend:
   branch: main                         # or master, check your default branch
   auth_scope: repo                    # scope for GitHub OAuth (repo is standard)
   base_url: https://strelitziatrio.com/admin   # your Netlify CMS admin URL
-  auth_endpoint: /admin/authenticate  # path used for auth; usually /admin/authenticate
+  auth_endpoint: /authenticate  # path used for auth; usually /admin/authenticate
   api_root: https://api.github.com     # GitHub API endpoint
   open_authoring: false                # false means only repo collaborators can edit; true allows fork+pull requests for external contributors
 
