@@ -1,18 +1,17 @@
 backend:
   name: github
-  repo: yourusername/yourrepo
-  branch: main
+  repo: strelitziatrio/strelitziatrio
+  branch: main # or master
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "static/img"
+public_folder: "/img"
 
 collections:
-  - name: "pages"
-    label: "Pages"
-    files:
-      - label: "Home Page"
-        name: "home"
-        file: "index.html"
-        fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+  - name: "posts"
+    label: "Posts"
+    folder: "content/posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Body", name: "body", widget: "markdown"}
