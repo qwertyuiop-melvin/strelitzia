@@ -14,7 +14,7 @@ export default defineStackbitConfig({
           type: 'page',
           labelField: 'title',
           urlPath: '/{slug}',
-          filePathPattern: 'content/pages/{slug}.md'
+          filePathPattern: 'content/posts/{slug}.md'
         }
       ]
     }
