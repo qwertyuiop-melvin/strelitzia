@@ -1,23 +1,29 @@
-// stackbit.config.ts
-import { defineStackbitConfig } from "@stackbit/types";
-import { GitContentSource } from "@stackbit/cms-git";
+import { defineStackbitConfig } from '@stackbit/sdk';
 
 export default defineStackbitConfig({
   contentSources: [
-    new GitContentSource({
-      rootPath: __dirname,
-      contentDirs: ["content"], // Folder with your content (e.g., Markdown files)
+    {
+      name: 'content',
+      type: 'git',
+      connection: {
+        repositoryId: 'strelitziatrio/strelitziatrio.com'
+      },
       models: [
         {
-          name: "Page",
-          type: "page", // Makes it editable in the visual editor
-          urlPath: "/{slug}", // Dynamic URL
-          fields: [
-            { name: "title", type: "string", required: true },
-            { name: "body", type: "markdown" } // For rich text
-          ]
+          name: 'page',
+          type: 'page',
+          labelField: 'title',
+          urlPath: '/{slug}',
+          filePathPattern: 'content/pages/{slug}.md'
         }
       ]
-    })
-  ]
+    }
+  ],
+  siteMap: async ({ contentSource }) => {
+    const pages = await contentSource.getAllEntries({ modelType: 'page' });
+    return pages.map((page) => ({
+      urlPath: `/${page.slug}`,
+      entryId: page.id
+    }));
+  }
 });
