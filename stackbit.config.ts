@@ -2,31 +2,21 @@ import { defineStackbitConfig } from '@stackbit/types';
 import { GitContentSource } from "@stackbit/cms-git";
 
 export default defineStackbitConfig({
-  staticDirs: ['static'],
   stackbitVersion: "~0.6.0",
   contentSources: [
     new GitContentSource({
       name: 'content',
       rootPath: __dirname,
-      contentDirs: ['content/pages'], // MUST use this exact path
+      contentDirs: ['content/pages'], // MUST match your folder
       models: [
         {
-          name: 'Page', // MUST be capitalized
-          type: 'page', // MUST be lowercase
+          name: 'Page', // Capitalized
+          type: 'page', // Lowercase
           urlPath: '/{slug}',
-          filePath: 'content/pages/{slug}.md', // MUST use .md
+          filePath: 'content/pages/{slug}.md',
           fields: [
-            { 
-              name: 'title', 
-              type: 'string', 
-              required: true,
-              constrolType: 'text-input' // REQUIRED for editing
-            },
-            { 
-              name: 'content', 
-              type: 'markdown',
-              constrolType: 'markdown' // REQUIRED for editing
-            }
+            { name: 'title', type: 'string', required: true },
+            { name: 'content', type: 'markdown' }
           ]
         }
       ]
@@ -36,7 +26,16 @@ export default defineStackbitConfig({
     { 
       name: 'Page', 
       type: 'page', 
-      urlPath: '/{slug}' 
+      urlPath: '/{slug}',
+      pageLayout: 'page' // Critical for page editor
     }
-  ]
+  ],
+  siteMap: ({ documents }) => {
+    return documents.map(doc => ({
+      urlPath: doc.modelName === 'Page' ? `/${doc.slug}` : '/',
+      stableId: doc.id,
+      document: doc,
+      isHomePage: doc.slug === 'home'
+    }));
+  }
 });
