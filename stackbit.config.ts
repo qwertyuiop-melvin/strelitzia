@@ -1,4 +1,4 @@
-import { defineStackbitConfig } from '@stackbit/types';
+import { defineStackbitConfig, getLocalizedFieldForLocale } from '@stackbit/types';
 import { GitContentSource } from "@stackbit/cms-git";
 
 export default defineStackbitConfig({
@@ -7,15 +7,17 @@ export default defineStackbitConfig({
     new GitContentSource({
       name: 'content',
       rootPath: __dirname,
-      contentDirs: ['content/pages'], // MUST match your folder
+      contentDirs: ['content/pages'],
       models: [
         {
-          name: 'Page', // Capitalized
-          type: 'page', // Lowercase
+          name: 'Page', // Must be capitalized
+          type: 'page', // Must be lowercase
           urlPath: '/{slug}',
           filePath: 'content/pages/{slug}.md',
           fields: [
             { name: 'title', type: 'string', required: true },
+            { name: 'slug', type: 'string', required: true }, // Explicit slug field
+            { name: 'pageId', type: 'string', hidden: true }, // Required for stable IDs
             { name: 'content', type: 'markdown' }
           ]
         }
@@ -24,18 +26,29 @@ export default defineStackbitConfig({
   ],
   modelExtensions: [
     { 
-      name: 'Page', 
-      type: 'page', 
+      name: 'Page',
+      type: 'page',
       urlPath: '/{slug}',
-      pageLayout: 'page' // Critical for page editor
+      pageLayout: 'page' // Critical for editor
     }
   ],
+  onContentCreate: async ({ object }) => {
+    if (!object.pageId) {
+      object.pageId = Date.now().toString();
+    }
+    return object;
+  },
   siteMap: ({ documents }) => {
-    return documents.map(doc => ({
-      urlPath: doc.modelName === 'Page' ? `/${doc.slug}` : '/',
-      stableId: doc.id,
-      document: doc,
-      isHomePage: doc.slug === 'home'
-    }));
+    return documents.map(doc => {
+      const slug = getLocalizedFieldForLocale(doc.fields?.slug);
+      const pageId = getLocalizedFieldForLocale(doc.fields?.pageId);
+      
+      return {
+        stableId: pageId?.value || doc.id,
+        urlPath: `/${slug?.value || doc.slug}`,
+        document: doc,
+        isHomePage: doc.slug === 'home'
+      };
+    });
   }
 });
