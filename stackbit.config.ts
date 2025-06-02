@@ -2,6 +2,7 @@ import { defineStackbitConfig } from '@stackbit/types';
 import { GitContentSource } from "@stackbit/cms-git";
 
 export default defineStackbitConfig({
+  staticDirs: ['static'],
   stackbitVersion: "~0.6.0",
   contentSources: [
     new GitContentSource({
