@@ -2,44 +2,31 @@ import { defineStackbitConfig } from '@stackbit/types';
 import { GitContentSource } from "@stackbit/cms-git";
 
 export default defineStackbitConfig({
+  stackbitVersion: "~0.6.0",
   contentSources: [
     new GitContentSource({
       name: 'content',
       rootPath: __dirname,
-      contentDirs: ['content'],
+      contentDirs: ['content/posts'],
       models: [
         {
-          name: 'homepage', // Changed from 'page' to match our specific homepage
+          name: 'page',
           type: 'page',
-          urlPath: '/',
-          filePath: 'content/home.md', // Specific file for homepage
+          urlPath: '/{slug}',
+          filePath: 'content/posts/{slug}.md',
           fields: [
-            { 
-              name: 'metadata',
-              type: 'object',
-              fields: [
-                { name: 'title', type: 'string', required: true }
-              ]
-            },
-            { 
-              name: 'hero',
-              type: 'object',
-              fields: [
-                { name: 'title', type: 'string', required: true },
-                { name: 'description', type: 'string' }
-              ]
-            }
+            { name: 'title', type: 'string', required: true },
+            { name: 'content', type: 'markdown' }
           ]
         }
       ]
     })
   ],
-  siteMap: ({ documents }) => {
-    return documents.map(document => ({
-      urlPath: document.modelName === 'homepage' ? '/' : `/${document.slug}`,
-      stableId: document.id,
-      document,
-      isHomePage: document.modelName === 'homepage'
-    }));
-  }
+  modelExtensions: [
+    { 
+      name: "page", 
+      type: "page", 
+      urlPath: "/{slug}" 
+    }
+  ]
 });
