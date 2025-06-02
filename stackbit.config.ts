@@ -9,27 +9,37 @@ export default defineStackbitConfig({
       contentDirs: ['content'],
       models: [
         {
-          name: 'page',
-          type: 'page', // This is crucial for visual editing
-          labelField: 'title',
-          urlPath: '/{slug}',
-          filePath: 'content/posts/{slug}.md', // Changed from filePathPattern to filePath
+          name: 'homepage', // Changed from 'page' to match our specific homepage
+          type: 'page',
+          urlPath: '/',
+          filePath: 'content/home.md', // Specific file for homepage
           fields: [
-            { name: 'title', type: 'string', required: true },
-            { name: 'content', type: 'markdown' } // Add your content field
+            { 
+              name: 'metadata',
+              type: 'object',
+              fields: [
+                { name: 'title', type: 'string', required: true }
+              ]
+            },
+            { 
+              name: 'hero',
+              type: 'object',
+              fields: [
+                { name: 'title', type: 'string', required: true },
+                { name: 'description', type: 'string' }
+              ]
+            }
           ]
         }
-      ],
+      ]
     })
   ],
   siteMap: ({ documents }) => {
-    return documents
-      .filter(document => document.modelName === 'page')
-      .map(document => ({
-        urlPath: `/${document.slug}`,
-        stableId: document.id,
-        document,
-        isHomePage: document.slug === 'home'
-      }));
+    return documents.map(document => ({
+      urlPath: document.modelName === 'homepage' ? '/' : `/${document.slug}`,
+      stableId: document.id,
+      document,
+      isHomePage: document.modelName === 'homepage'
+    }));
   }
 });
